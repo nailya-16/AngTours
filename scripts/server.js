@@ -1,0 +1,85 @@
+//подключение модулей
+const fs = require('fs');
+const cors = require('cors');
+const express = require('express');
+const { log } = require('console');
+ 
+// user
+const userJson = "./src/app/shared/mocks/users.json";
+const jsonFileData =  fs.readFileSync(userJson, 'utf-8');
+let  parseJsonData = JSON.parse(jsonFileData);
+ 
+const app = express();
+const port = 3000;
+// cors logic
+app.use(cors());
+// add parser for post body
+app.use(express.json());
+ 
+ 
+// route logic
+app.get('/', (req, res) => {
+  res.send('Hello World!') 
+}) 
+ 
+//************************ */ register****************************
+app.post('/register', (req, res) => {
+      // find users
+      if (req.body?.login) {
+        const isUserExist = parseJsonData.users.find((user) => user.login === req.body?.login);
+        if (!isUserExist) {
+            parseJsonData.users.push(req.body);
+            const json = JSON.stringify(parseJsonData);
+            fs.writeFileSync(userJson, json, 'utf-8', (data) => {}, (err) => {
+              console.log('err write file', err)
+            });
+ 
+            // send response
+            res.send('ok');
+        } else {
+          throw new Error('Пользователь уже зарегестрирован');
+        }
+      } else {
+        throw new Error('не найдено свойство login');
+      }
+      console.log('parseJsonData Registration', parseJsonData);
+ 
+})
+
+//************** */ auth**************************************
+app.post('/auth', (req, res) => { 
+  log('req.body', req.body);
+
+  // Проверяем, переданы ли логин и пароль
+  if (!req.body?.login || !req.body.password) {
+    throw new Error('не найдено свойство login или password');
+  }
+
+  // Читаем данные пользователей из JSON файла
+  try {
+    const jsonFileData = fs.readFileSync(userJson, 'utf-8');
+    const parseJsonData = JSON.parse(jsonFileData);
+    console.log('parseJsonData auth', parseJsonData);
+
+    // Проверяем, является ли users массивом, и находим пользователя
+    if (Array.isArray(parseJsonData?.users)) {
+      const isUserExist = parseJsonData.users.find(user => user.login === req.body.login && user.password === req.body.password);
+
+      if (isUserExist) { 
+        return res.send(isUserExist);
+      } else {
+        throw new Error('Ошибка авторизации. Попробуйте еще раз.');
+      }
+    } else {
+      throw new Error('Ошибка - данные пользователей некорректны');
+    }
+  } catch (error) {
+    console.error('Ошибка при аутентификации:', error);
+    throw new Error('Ошибка сервера');
+  }
+});
+
+// run and listen serve
+app.listen(port, () => {
+  console.log(`app listening on port ${port}`);
+});
