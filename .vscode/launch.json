@@ -3,6 +3,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "command": "npm run serverWithNg",
+      "name": "Run serverWithNg",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
