@@ -5,7 +5,8 @@ const express = require('express');
 const { log } = require('console');
  
 // user
-const userJson = "./src/app/shared/mocks/users.json";
+const userJson = "./server-data/users.json";
+const toursJson = "./server-data/tours.json"
 const jsonFileData =  fs.readFileSync(userJson, 'utf-8');
 let  parseJsonData = JSON.parse(jsonFileData);
  
@@ -77,6 +78,14 @@ app.post('/auth', (req, res) => {
     console.error('Ошибка при аутентификации:', error);
     throw new Error('Ошибка сервера');
   }
+});
+
+//************** */ tours**************************************
+ 
+app.get('/tours', (req, res) => { 
+  const jsonFileData =  fs.readFileSync(toursJson, 'utf-8', (err, data) => {}, (err) => {
+    console.log('err read file tours', err);});
+  res.send(jsonFileData);
 });
 
 // run and listen serve
