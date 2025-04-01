@@ -14,4 +14,10 @@ export class ToursService {
     return this.http.get(API.tours);
   }
 
+  getTourById(id: string):Observable<any> {  //TODO add types for responce
+    const tourApi = API.tour;
+    //const path = API.tour+'/'+id;            //альтернативный способ
+    return this.http.get(`${tourApi}/${id}`);
+  }
+
 }

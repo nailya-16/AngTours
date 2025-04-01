@@ -88,6 +88,23 @@ app.get('/tours', (req, res) => {
   res.send(jsonFileData);
 });
 
+ /*******************get tour */
+ app.get('/tour/:id', (req, res) => { 
+  const jsonFileData =  fs.readFileSync(toursJson, 'utf-8', (err, data) => {}, (err) => {
+    console.log('err read file tours', err);});
+            // parse data
+    const  parseJsonData = JSON.parse(jsonFileData);
+    const paramId = req.params.id;
+
+
+    const item = parseJsonData.tours.find((tour) => tour.id === paramId);
+    if (item) {
+      res.send(item);
+    } else {
+      throw new Error('Тур не найден по id:', paramId);
+    }
+});
+
 // run and listen serve
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
