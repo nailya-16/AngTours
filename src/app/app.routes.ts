@@ -6,7 +6,7 @@ import { ToursComponent } from './pages/tours/tours.component';
 export const routes: Routes = [
     { path: 'auth', component: AuthComponent },
     { path: '', redirectTo: '/auth', pathMatch: 'full' },
-    { path: 'tickets',
+    { path: 'tours',
         component: LayoutComponent,
         children: [
             {path: '', component: ToursComponent}

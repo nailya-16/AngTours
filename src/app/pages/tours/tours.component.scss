@@ -1,3 +1,9 @@
 :host {
   display: block;
 }
+
+.tours-list {
+  & .tours-item {
+    position: relative;
+  }
+}
