@@ -36,8 +36,8 @@ export class AuthorizationComponent implements OnInit, OnDestroy {
 
     this.userService.authUser (user).subscribe({
       next: (response) => {
-        this.router.navigate(['tickets']);
-        this.initToast('success', 'Авторизация прошла успешно');
+        this.userService.setUser(user);
+        this.router.navigate(['tours']);
       },
       error: (error) => {
         console.error('Ошибка при авторизации:', error);
