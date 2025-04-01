@@ -1,7 +1,8 @@
 <div class="tours-list flex flex-wrap justify-content-around align-items-stretch">
 
     @for (item of tours; track item.id) {
-        <div class="m-2 col-3 tour-item align-self-stretch">
+        <div (click)="goToTour(item)"
+        class="m-2 col-3 tour-item align-self-stretch">
             <p-card
             header="{{item.name}}"
             subheader="{{item.price}}"
