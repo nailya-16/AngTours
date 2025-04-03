@@ -19,4 +19,19 @@ export class ToursService {
     const tourApi = API.tour;
     return this.http.get<Tour>(`${tourApi}/${id}`); 
   }
+
+  searchTours(tours: Tour[], value: string): Tour[] {
+    if (Array.isArray(tours)) {
+      return tours.filter((tour) => {
+
+        if (tour && typeof tour.name === 'string') {
+          return tour.name.toLowerCase().includes(value.toLowerCase());
+        } else {
+          return false;
+        }
+      });
+    } else {
+      return [];
+    }
+  }
 }

@@ -9,7 +9,6 @@ export interface IUserRegister {
     email: string;
 }
 
-// models/tour.model.ts
 export interface Tour {
     id: string;
     name: string;
