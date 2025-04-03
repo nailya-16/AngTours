@@ -1,20 +1,21 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToursService } from '../../services/tours.service';
 import { CardModule} from 'primeng/card'
 import { ActivatedRoute, Router } from '@angular/router';
+import { Tour } from '../../models/user';
 
 @Component({
   selector: 'app-tours',
   imports: [CardModule],
   templateUrl: './tours.component.html',
-  styleUrl: './tours.component.css'
+  styleUrls: ['./tours.component.css']
 })
-export class ToursComponent implements OnInit { 
-  tours: any = []; //TODO add types
+export class ToursComponent implements OnInit {
+  tours: Tour[] = [];
 
   constructor(private toursService: ToursService,
-    private route: ActivatedRoute,
-    private router: Router){}
+              private route: ActivatedRoute,
+              private router: Router) {}
 
   ngOnInit(): void {
     this.toursService.getTours().subscribe((data) => {
@@ -24,7 +25,7 @@ export class ToursComponent implements OnInit {
     });
   }
 
-  goToTour(item: any): void {   //TODO add interface
+  goToTour(item: Tour): void { 
     this.router.navigate(['tour', item.id], {relativeTo: this.route});
   }
 }
