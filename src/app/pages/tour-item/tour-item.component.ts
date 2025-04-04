@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ToursService } from '../../services/tours.service';
-import { ActivatedRoute } from '@angular/router';
-import { Tour } from '../../models/user'; 
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Tour } from '../../models/tours'; 
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-tour-item',
-  imports: [],
+  imports: [CardModule, ButtonModule, NgIf, RouterLink],
   templateUrl: './tour-item.component.html',
   styleUrls: ['./tour-item.component.scss']
 })
