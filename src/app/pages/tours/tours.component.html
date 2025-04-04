@@ -2,7 +2,7 @@
     <input
         pInputText
         placeholder="поиск тура"
-        [(ngModel)]="searchValue"
+        #searchInput
     />
 
     <p-inputgroup-addon>
@@ -13,7 +13,7 @@
 
 <div class="tours-list flex flex-wrap justify-content-around align-items-stretch">
 
-    @for (item of tours | search: searchValue : 'name'; track item.id) {
+    @for (item of tours | search: searchInput.value : 'name'; track item.id) {
         <div (click)="goToTour(item)"
         class="m-2 col-3 tour-item align-self-stretch">
             <p-card
@@ -28,5 +28,8 @@
                 <p>{{item.description}}</p>
             </p-card>
         </div>
+    }
+    @empty {
+        <div class="no-data"> Нет данных </div>
     }
 </div>

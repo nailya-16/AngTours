@@ -6,7 +6,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { Tour } from '../../models/user';
+import { Tour } from '../../models/tours';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
 import { FormsModule } from '@angular/forms';
 
@@ -19,7 +19,6 @@ import { FormsModule } from '@angular/forms';
 export class ToursComponent implements OnInit {
   tours: Tour[] = [];
   toursStore: Tour[] = [];
-  searchValue = '';
 
   constructor(private toursService: ToursService,
               private route: ActivatedRoute,
