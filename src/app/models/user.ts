@@ -8,13 +8,5 @@ export interface IUserRegister {
     password?: string;
     email: string;
 }
-
-export interface Tour {
-    id: string;
-    name: string;
-    img: string;
-    description?: string;
-    price: number;
-  }
   
   

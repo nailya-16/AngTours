@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API } from '../shared/api';
-import { Tour } from '../models/user';
+import { Tour } from '../models/tours';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,12 @@ export class ToursService {
   getTourById(id: string): Observable<Tour> { 
     const tourApi = API.tour;
     return this.http.get<Tour>(`${tourApi}/${id}`); 
+  }
+
+  getNearestTourByLocationId(id: string): Observable<Tour[]> {
+    return this.http.get<Tour[]>(API.nearestTours, {
+      params: {locationId: id}
+    });
   }
 
   searchTours(tours: Tour[], value: string): Tour[] {

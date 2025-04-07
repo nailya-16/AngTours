@@ -7,5 +7,6 @@ export const API = {
     registration: `${serverIp}/register`,
     tours: `${serverIp}/tours`,
     tour: `${serverIp}/tour`,
-    config: `/config/config.json`
+    config: `/config/config.json`,
+    nearestTours: `${serverIp}/nearestTours`,
 }
