@@ -5,10 +5,11 @@ import { Tour } from '../../models/tours';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
+import { NearestToursComponent } from './nearest-tours/nearest-tours.component';
 
 @Component({
   selector: 'app-tour-item',
-  imports: [CardModule, ButtonModule, NgIf, RouterLink],
+  imports: [CardModule, ButtonModule, NearestToursComponent, RouterLink],
   templateUrl: './tour-item.component.html',
   styleUrls: ['./tour-item.component.scss']
 })
