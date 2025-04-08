@@ -2,10 +2,11 @@ import { Component, EventEmitter, inject, Input, model, OnChanges, OnInit, Outpu
 import { Tour } from '../../../models/tours';
 import { ToursService } from '../../../services/tours.service';
 import { GalleriaModule } from 'primeng/galleria';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-nearest-tours',
-  imports: [GalleriaModule],
+  imports: [GalleriaModule, NgOptimizedImage],
   templateUrl: './nearest-tours.component.html',
   styleUrl: './nearest-tours.component.scss'
 })
