@@ -22,3 +22,15 @@
         }
     }
 }
+
+.p-button.p-button-link {
+ color: blueviolet;
+}
+
+.tour-item-galleria {
+    & .p-galleria-item {
+        & > img {
+            height: 250px;
+        }
+    }
+}

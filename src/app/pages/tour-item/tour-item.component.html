@@ -4,20 +4,21 @@
   routerLink="/tours"
 ></p-button>
 
-<div class="flex flex-1">
+<div class="flex flex-1 tour-item-wrap">
 
   @if (tour) {
-    <p-card 
-    header="{{tour.name}}"
-    subheader="Цена: {{tour.price}}"
-    styleClass="p-card-shadow col-10 overflow-hidden"
-  >
-    <ng-template #header>
-      <img alt="Card" class="w-full" src="/img/{{tour.img}}">
-    </ng-template>
-    <p>{{ tour.description }}</p>
-
-  </p-card>
+    <div>
+      <p-card 
+      header="{{tour.name}}"
+      subheader="Цена: {{tour.price}}"
+      styleClass="p-card-shadow col-10 overflow-hidden"
+    >
+      <ng-template #header>
+    <img alt="Card" class="w-full" src="/img/{{tour.img}}">
+      </ng-template>
+      <p>{{ tour.description }}</p>
+      </p-card>
+    </div>
   } @else {
     Нет данных
   }
