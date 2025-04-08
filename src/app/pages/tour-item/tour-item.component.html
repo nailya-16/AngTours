@@ -24,7 +24,9 @@
   }
   
   <div class="nearest-tour">
-    <app-nearest-tours [tourNearest]="tour"/>
+    <app-nearest-tours 
+    (onTourChange)="onTourChanges($event)"
+    [tourNearest]="tour"/>
   </div>
 
 </div>  
