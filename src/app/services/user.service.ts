@@ -8,44 +8,30 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-
-  private currentUser: IUser | null = null;
+  private userKey = 'currentUser ';
 
   constructor(private http: HttpClient) { }
 
-  registerUser(user: IUserRegister): Observable<string> {
-    return this.http.post(API.registration, user, {responseType: 'text'});
+  registerUser (user: IUserRegister): Observable<string> {
+    return this.http.post(API.registration, user, { responseType: 'text' });
   }
 
   authUser (user: IUser): Observable<any> {
-    return this.http.post(API.auth, user, {responseType: 'text'});
+    return this.http.post(API.auth, user, { responseType: 'text' });
   }
 
-  getUser(): IUser {
-    return this.currentUser
+  //метод для получения пользователя
+  getUser (): IUser | null {
+    const user = sessionStorage.getItem(this.userKey);
+    return user ? JSON.parse(user) : null;
   }
-  setUser(user: IUser): void {
-    this.currentUser = user;
+
+  //метод для установки пользователя
+  setUser (user: IUser | null): void {
+    if (user) {
+      sessionStorage.setItem(this.userKey, JSON.stringify(user)); // Сохраняем в sessionStorage
+    } else {
+      sessionStorage.removeItem(this.userKey); // Удаляем из sessionStorage
+    }
   }
 }
-  
-  // addUser(user: IUser, isRememberMe?: boolean): true | string {
-  //   if (this.getUser(user.login)) {
-  //     return 'User already exists';
-  //   }
-  //   this.userStorage.push(user);
-  //   return true;
-  // }
-
-  // checkUser(login: string): boolean {
-  //   return !!this.getUser(login);
-  // }
-
-  // authenticateUser (credentials: { login: string; password: string }): boolean {
-  //   const user = this.getUser(credentials.login);
-  //   if (user && user.password === credentials.password) {
-  //     this.currentUser  = user;
-  //     return true; 
-  //   }
-  //   return false;
-  // }
