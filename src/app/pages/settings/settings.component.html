@@ -1,0 +1,16 @@
+<div>
+    @for (item of menuItems; track item.path) {
+        
+      <p-button
+      [label]="item.label"
+      styleClass="p-button-link"
+      [routerLink]="item.path"
+    ></p-button>
+    
+    }
+    <div>
+        <router-outlet/>
+    </div>    
+</div>
+  
+  
