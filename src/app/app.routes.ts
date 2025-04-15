@@ -15,7 +15,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         component: LayoutComponent,
         children: [
-            { path: '', component: ToursComponent,},
+            { path: '', component: ToursComponent, data: {showAside: true}},
             { path: 'tour', redirectTo: '', pathMatch: 'full'},
             { path: 'tour/:id', component: TourItemComponent},
 
@@ -26,7 +26,7 @@ export const routes: Routes = [
                 children: [
                     { path: '', redirectTo: 'change-password', pathMatch: 'full' },
                     { path: 'change-password', component: ChangePasswordComponent },
-                    { path: 'statistic', component: StatisticComponent },
+                    { path: 'statistic', component: StatisticComponent, data: {showAside: true}},
                 ]
             }
         ]
