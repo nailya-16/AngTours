@@ -1,1 +1,12 @@
-<p>aside works!</p>
+<div class="aside m-3">
+    <p>Выберите тип тура</p>
+
+        <p-select
+         [options]="tourTypes"
+         [(ngModel)]="selectedType"
+          (onChange)="changeTourType($event)"
+          optionLabel="label"
+          placeholder="Выберите тип тура"
+          class="w-full md:w-56"
+        />
+</div>

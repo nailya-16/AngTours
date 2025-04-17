@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { API } from '../shared/api';
 import { Tour } from '../models/tours';
 
@@ -8,6 +8,9 @@ import { Tour } from '../models/tours';
   providedIn: 'root'
 })
 export class ToursService {
+
+  private tourTypeSubject = new Subject<any>();    //TODO defined type
+  readonly tourType$ = this.tourTypeSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -39,5 +42,9 @@ export class ToursService {
     } else {
       return [];
     }
+  }
+
+  initChangeTourType(val: any): void {      //TODO defined type
+    this.tourTypeSubject.next(val);
   }
 }
