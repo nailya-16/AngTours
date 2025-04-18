@@ -9,8 +9,13 @@ import { Tour } from '../models/tours';
 })
 export class ToursService {
 
+  //type
   private tourTypeSubject = new Subject<any>();    //TODO defined type
   readonly tourType$ = this.tourTypeSubject.asObservable();
+
+  //date
+  private tourDateSubject = new Subject<Date>(); 
+  readonly tourDate$ = this.tourDateSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -46,5 +51,9 @@ export class ToursService {
 
   initChangeTourType(val: any): void {      //TODO defined type
     this.tourTypeSubject.next(val);
+  }
+
+  initChangeTourDate(val: Date): void {     //TODO defined type
+    this.tourDateSubject.next(val);
   }
 }

@@ -9,4 +9,13 @@
           placeholder="Выберите тип тура"
           class="w-full md:w-56"
         />
+    
+    <div class="my-3">
+        <p-datepicker
+        [showIcon]="true"
+        [(ngModel)]="date" 
+        (onSelect)="changeDate($event)"
+        [showButtonBar]="true"
+        dateFormat="dd-mm-yy" />
+    </div>
 </div>

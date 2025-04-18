@@ -10,6 +10,7 @@ import { Tour } from '../../models/tours';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
 import { FormsModule } from '@angular/forms';
 import { HighlightActiveDirective } from '../../shared/directives/highlight-active.directive';
+import { isValid } from "date-fns";
 
 @Component({
   selector: 'app-tours',
@@ -36,6 +37,7 @@ export class ToursComponent implements OnInit {
 
   ngOnInit(): void {
 
+    //Types
     this.toursService.tourType$.subscribe((tour) => {
       console.log('tour', tour)
       switch (tour.key) {
@@ -50,6 +52,24 @@ export class ToursComponent implements OnInit {
         break;
       }
     })
+
+    //Date
+    this.toursService.tourDate$.subscribe((date) => {
+      console.log('****date', date)
+
+      this.tours = this.toursStore.filter((tour) => {
+        if (isValid(new Date(tour.date))) {
+          const tourDate = new Date(tour.date).setHours(0, 0, 0, 0);    //обнуляем часы/минуты/секунды/миллисекунды
+          console.log('****tourDate', tourDate)
+          const calendarDate = new Date(date).setHours(0, 0, 0);        //обнуляем часы/минуты/секунды
+          console.log('****calendarDate', calendarDate)
+          return tourDate === calendarDate;
+        } else {
+          return false;
+        }
+      })
+    })
+
     this.toursService.getTours().subscribe((data) => {
       if (Array.isArray(data?.tours)) {
         this.tours = data.tours;
