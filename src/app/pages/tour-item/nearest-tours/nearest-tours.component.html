@@ -4,23 +4,24 @@
         placeholder="поиск тура"
         #searchInput
     />
-
     <p-inputgroup-addon>
         <p-button icon="pi pi-search" severity="secondary" variant="text"/>
     </p-inputgroup-addon>
 </p-inputgroup>
 
 <p-galleria 
-(activeIndexChange)="activeIndexChange($event)"
-class="tour-item-galleria"
-[value]="toursArr()" 
-[showIndicators]="true" 
-[showThumbnails]="false" 
-[containerStyle]="{ 'width': '340px' }"
+    (activeIndexChange)="activeIndexChange($event)"
+    class="tour-item-galleria"
+    [value]="toursArr()" 
+    [showIndicators]="true" 
+    [showThumbnails]="false" 
+    [containerStyle]="{ 'width': '340px' }"
 >
-    
     <ng-template #item let-item>
         <img [ngSrc]="'/img/'+ item.img" priority fill/>
     </ng-template>
-
 </p-galleria>
+
+<div *ngIf="toursArr().length === 0" class="no-tours-message">
+    Туров не найдено
+</div>
