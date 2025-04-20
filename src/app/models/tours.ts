@@ -13,3 +13,8 @@ export interface Tour {
 export interface ToursServerResponse {
     tours: Tour[];
 }
+
+export interface ITourType { 
+    key: string;
+    label: string
+ }

@@ -15,6 +15,7 @@
         [showIcon]="true"
         [(ngModel)]="date" 
         (onSelect)="changeDate($event)"
+        (onClearClick)="clearDate()"
         [showButtonBar]="true"
         dateFormat="dd-mm-yy" />
     </div>
