@@ -10,7 +10,7 @@ import { Tour } from '../models/tours';
 export class ToursService {
 
   //type
-  private tourTypeSubject = new Subject<any>();    //TODO defined type
+  private tourTypeSubject = new Subject<string>();    //TODO defined type
   readonly tourType$ = this.tourTypeSubject.asObservable();
 
   //date
@@ -49,7 +49,7 @@ export class ToursService {
     }
   }
 
-  initChangeTourType(val: any): void {      //TODO defined type
+  initChangeTourType(val: string): void {      //TODO defined type
     this.tourTypeSubject.next(val);
   }
 

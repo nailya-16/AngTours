@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ToursService } from '../../services/tours.service';
 import { CardModule} from 'primeng/card'
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { SearchPipe } from '../../shared/pipes/search.pipe';
 import { FormsModule } from '@angular/forms';
 import { HighlightActiveDirective } from '../../shared/directives/highlight-active.directive';
 import { isValid } from "date-fns";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tours',
@@ -27,47 +28,36 @@ import { isValid } from "date-fns";
   templateUrl: './tours.component.html',
   styleUrls: ['./tours.component.scss']
 })
-export class ToursComponent implements OnInit {
+export class ToursComponent implements OnInit, OnDestroy {
   tours: Tour[] = [];
   toursStore: Tour[] = [];
+  tourType: any = null;
+  tourDate: any = null;
+  tourTypeSubscriber: Subscription;
+  tourDateSubscriber: Subscription;
+
 
   constructor(private toursService: ToursService,
               private route: ActivatedRoute,
               private router: Router) {}
-
+  
+  
   ngOnInit(): void {
 
     //Types
-    this.toursService.tourType$.subscribe((tour) => {
-      console.log('tour', tour)
-      switch (tour.key) {
-        case 'group':
-          this.tours = this.toursStore.filter((el) => el.type === 'group')
-        break;
-        case 'single':
-          this.tours = this.toursStore.filter((el) => el.type === 'single')
-        break;
-        case 'all':
-          this.tours = [...this.toursStore];
-        break;
-      }
+    this.tourTypeSubscriber = this.toursService.tourType$.subscribe((tourKey: string) => {
+      this.tourType = tourKey;
+      this.initFilterLogic();
     })
 
+    
+    
     //Date
-    this.toursService.tourDate$.subscribe((date) => {
+    this.tourDateSubscriber = this.toursService.tourDate$.subscribe((date) => {
+      this.tourDate = date;
       console.log('****date', date)
 
-      this.tours = this.toursStore.filter((tour) => {
-        if (isValid(new Date(tour.date))) {
-          const tourDate = new Date(tour.date).setHours(0, 0, 0, 0);    //обнуляем часы/минуты/секунды/миллисекунды
-          console.log('****tourDate', tourDate)
-          const calendarDate = new Date(date).setHours(0, 0, 0);        //обнуляем часы/минуты/секунды
-          console.log('****calendarDate', calendarDate)
-          return tourDate === calendarDate;
-        } else {
-          return false;
-        }
-      })
+        this.initFilterLogic();
     })
 
     this.toursService.getTours().subscribe((data) => {
@@ -77,11 +67,43 @@ export class ToursComponent implements OnInit {
       }
     });
   }
-
+  ngOnDestroy(): void {
+    this.tourTypeSubscriber.unsubscribe();
+    this.tourDateSubscriber.unsubscribe();
+  }
   goToTour(item: Tour): void { 
     this.router.navigate(['tour', item.id], {relativeTo: this.route});
   }
+  initFilterLogic() {
+    if (this.tourDate) {
+      this.tours = this.toursStore.filter((tour) => {
+        if (isValid(new Date(tour.date))) {
+          const tourDate = new Date(tour.date).setHours(0, 0, 0, 0);    //обнуляем часы/минуты/секунды/миллисекунды
+          console.log('****tourDate', tourDate)
+          const calendarDate = new Date(this.tourDate).setHours(0, 0, 0);        //обнуляем часы/минуты/секунды
+          console.log('****calendarDate', calendarDate)
+          return tourDate === calendarDate;
+        } else {
+          return false;
+        }
+      })
+    }
 
+    if (this.tourType) {
+     const tourStore = this.tourDate ? this.tours : this.toursStore;
+      switch (this.tourType) {
+        case 'group':
+          this.tours = tourStore.filter((el) => el.type === 'group')
+        break;
+        case 'single':
+          this.tours = tourStore.filter((el) => el.type === 'single')
+        break;
+        case 'all':
+          this.tours = [...tourStore];
+        break;
+      }
+    }
+  }
   searchTour(ev: Event): void {
     const target = ev.target as HTMLInputElement;
     const targetValue = target.value;
