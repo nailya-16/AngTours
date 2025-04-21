@@ -11,7 +11,7 @@ import { SearchPipe } from '../../shared/pipes/search.pipe';
 import { FormsModule } from '@angular/forms';
 import { HighlightActiveDirective } from '../../shared/directives/highlight-active.directive';
 import { isValid } from "date-fns";
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-tours',
@@ -33,8 +33,7 @@ export class ToursComponent implements OnInit, OnDestroy {
   toursStore: Tour[] = [];
   tourType: any = null;
   tourDate: any = null;
-  tourTypeSubscriber: Subscription;
-  tourDateSubscriber: Subscription;
+  destroyer = new Subject<boolean>();
 
 
   constructor(private toursService: ToursService,
@@ -45,7 +44,7 @@ export class ToursComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     //Types
-    this.tourTypeSubscriber = this.toursService.tourType$.subscribe((tourKey: string) => {
+    this.toursService.tourType$.pipe(takeUntil(this.destroyer)).subscribe((tourKey: string) => {
       this.tourType = tourKey;
       this.initFilterLogic();
     })
@@ -53,7 +52,7 @@ export class ToursComponent implements OnInit, OnDestroy {
     
     
     //Date
-    this.tourDateSubscriber = this.toursService.tourDate$.subscribe((date) => {
+    this.toursService.tourDate$.pipe(takeUntil(this.destroyer)).subscribe((date) => {
       this.tourDate = date;
       console.log('****date', date)
 
@@ -68,8 +67,8 @@ export class ToursComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
-    this.tourTypeSubscriber.unsubscribe();
-    this.tourDateSubscriber.unsubscribe();
+    this.destroyer.next(true);
+    this.destroyer.complete();
   }
   goToTour(item: Tour): void { 
     this.router.navigate(['tour', item.id], {relativeTo: this.route});
