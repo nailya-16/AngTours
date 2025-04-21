@@ -30,6 +30,8 @@ class="tours-list flex flex-wrap justify-content-around align-items-stretch">
                 </ng-template>
 
                 <p>{{item.description}}</p>
+
+                <p>Страна: {{item.country?.name_ru}} <img [src]="item.country?.flag_url"/></p>
             </p-card>
         </div>
     }

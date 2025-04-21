@@ -61,9 +61,9 @@ export class ToursComponent implements OnInit, OnDestroy {
     })
 
     this.toursService.getTours().subscribe((data) => {
-      if (Array.isArray(data?.tours)) {
-        this.tours = data.tours;
-        this.toursStore = [...data.tours];
+      if (Array.isArray(data)) {
+        this.tours = data;
+        this.toursStore = [...data];
       }
     });
   }
