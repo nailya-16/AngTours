@@ -125,10 +125,10 @@ export class ToursComponent implements OnInit, OnDestroy {
   getCountryDetail(ev: Event, code: string): void {
     ev.stopPropagation();                                                          //TODO check
     this.toursService.getCountryByCode(code).subscribe((data) => {
-      if (Array.isArray(data)) {
-        const countryInfo = data[0];
-        console.log('countryInfo', countryInfo)
-        this.location = {lat: countryInfo.latlng[0], lng: countryInfo.latlng[1]};   //сохранение локации, координат
+      if (data) {
+        const countrieInfo = data.countrieData;
+        console.log('countryInfo', countrieInfo)
+        this.location = {lat: countrieInfo.latlng[0], lng: countrieInfo.latlng[1]};   //сохранение локации, координат
         this.showModal = true;                                                      //отображение модального окна
       }
     })

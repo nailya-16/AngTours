@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { forkJoin, map, Observable, Subject } from 'rxjs';
+import { forkJoin, map, Observable, Subject, switchMap } from 'rxjs';
 import { API } from '../shared/api';
-import { ICountriesResponseItem, Tour, ToursServerResponse } from '../models/tours';
+import { Coords, ICountriesResponseItem, Tour, ToursServerResponse } from '../models/tours';
+import { MapService } from '../services/map.service'
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class ToursService {
   private tourDateSubject = new Subject<Date>(); 
   readonly tourDate$ = this.tourDateSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private mapService: MapService) { }
 
   getTours(): Observable<Tour[]> { 
     const countries = this.http.get<ICountriesResponseItem[]>(API.countries);
@@ -84,7 +85,36 @@ export class ToursService {
     this.tourDateSubject.next(val);
   }
 
-  getCountryByCode(code: string): Observable<any> {
-    return this.http.get<any>(API.countryByCode, {params: {codes: code}});  
+  getCountryByCode(code: string): Observable<any> {                //TODO add types
+    return this.http.get<Coords[]>(API.countryByCode, {params: {codes: code}}).pipe(
+
+      //send new data
+      map((countrieDataArr) => countrieDataArr[0]),                //countrieDataArr-данные полученные из source Observable
+
+      //send new Observable
+      switchMap((countrieData) => {                                //countrieData-данные полученные из предыдущего оператора map
+        console.log('countrieData', countrieData);
+        const coords = {lat: countrieData.latlng[0], lng: countrieData.latlng[1]};
+
+        //new Observable
+        return this.mapService.getWeather(coords).pipe(
+          map((weatherResponse) => {                              //weatherResponse-дата полученная из this.mapService.getWeather(coords)
+
+            const current = weatherResponse.current;
+            const hourly = weatherResponse.hourly;
+
+            const weatherData = {
+              isDay: current.is_day,
+              snowfall: current.snowfall,
+              rain: current.rain,
+              currentWeather: hourly.temperature_2m[15]             //индекс 15 - температура днем
+            };
+
+            console.log('weatherData', weatherData)
+            return {countrieData, weatherData}                      //return new data for new other Observable
+          })
+        )
+      })
+    )  
   }
 }

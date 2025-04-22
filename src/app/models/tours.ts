@@ -32,3 +32,6 @@ export interface ILocation {
     lat: number;
     lng: number;
 }
+export type Coords = {
+    latlng: [number, number]
+}
