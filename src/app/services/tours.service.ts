@@ -76,11 +76,15 @@ export class ToursService {
     }
   }
 
-  initChangeTourType(val: string): void {      //TODO defined type
+  initChangeTourType(val: string): void {     
     this.tourTypeSubject.next(val);
   }
 
-  initChangeTourDate(val: Date): void {     //TODO defined type
+  initChangeTourDate(val: Date): void {    
     this.tourDateSubject.next(val);
+  }
+
+  getCountryByCode(code: string): Observable<any> {
+    return this.http.get<any>(API.countryByCode, {params: {codes: code}});  
   }
 }

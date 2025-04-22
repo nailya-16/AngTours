@@ -6,12 +6,14 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { Tour } from '../../models/tours';
+import { ILocation, Tour } from '../../models/tours';
 import { SearchPipe } from '../../shared/pipes/search.pipe';
 import { FormsModule } from '@angular/forms';
 import { HighlightActiveDirective } from '../../shared/directives/highlight-active.directive';
 import { isValid } from "date-fns";
 import { Subject, Subscription, takeUntil } from 'rxjs';
+import { MapComponent } from '../../shared/components/map/map.component';
+import { DialogModule } from 'primeng/dialog'
 
 @Component({
   selector: 'app-tours',
@@ -23,10 +25,12 @@ import { Subject, Subscription, takeUntil } from 'rxjs';
     InputTextModule,
     SearchPipe, 
     FormsModule, 
-    HighlightActiveDirective
+    HighlightActiveDirective,
+    MapComponent,
+    DialogModule
   ],
   templateUrl: './tours.component.html',
-  styleUrls: ['./tours.component.scss']
+  styleUrl: './tours.component.scss'
 })
 export class ToursComponent implements OnInit, OnDestroy {
   tours: Tour[] = [];
@@ -34,7 +38,8 @@ export class ToursComponent implements OnInit, OnDestroy {
   tourType: any = null;
   tourDate: any = null;
   destroyer = new Subject<boolean>();
-
+  showModal = false;
+  location: ILocation = null;
 
   constructor(private toursService: ToursService,
               private route: ActivatedRoute,
@@ -115,5 +120,17 @@ export class ToursComponent implements OnInit, OnDestroy {
     if(targetTour) {
       this.goToTour(targetTour);
     }
+  }
+
+  getCountryDetail(ev: Event, code: string): void {
+    ev.stopPropagation();                                                          //TODO check
+    this.toursService.getCountryByCode(code).subscribe((data) => {
+      if (Array.isArray(data)) {
+        const countryInfo = data[0];
+        console.log('countryInfo', countryInfo)
+        this.location = {lat: countryInfo.latlng[0], lng: countryInfo.latlng[1]};   //сохранение локации, координат
+        this.showModal = true;                                                      //отображение модального окна
+      }
+    })
   }
 }
