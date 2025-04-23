@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { forkJoin, map, Observable, Subject, switchMap } from 'rxjs';
+import { delay, forkJoin, map, Observable, Subject, switchMap, tap } from 'rxjs';
 import { API } from '../shared/api';
 import { Coords, ICountriesResponseItem, Tour, ToursServerResponse } from '../models/tours';
 import { MapService } from '../services/map.service'
+import { LoaderService } from './loader.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +19,19 @@ export class ToursService {
   private tourDateSubject = new Subject<Date>(); 
   readonly tourDate$ = this.tourDateSubject.asObservable();
 
-  constructor(private http: HttpClient, private mapService: MapService) { }
+  constructor(private http: HttpClient, private mapService: MapService, private loaderService: LoaderService) { }
 
   getTours(): Observable<Tour[]> { 
+
+    //set loader
+    this.loaderService.setLoader(true);
+
     const countries = this.http.get<ICountriesResponseItem[]>(API.countries);
     const tours = this.http.get<ToursServerResponse>(API.tours);
 
   //parralel
     return forkJoin<[ICountriesResponseItem[], ToursServerResponse]>([countries, tours]).pipe(
+      delay(1000),
       map((data) => {
         console.log('data', data);
 
@@ -47,7 +53,11 @@ export class ToursService {
           });
         }
         return toursWithCountries;
-      })
+      }),
+      tap((data) => {
+        //hide loader
+        this.loaderService.setLoader(false);
+      }),
     ) 
   }
 
