@@ -134,6 +134,28 @@ app.get('/countries', (req, res) => {
     res.send(parseJsonData);
 });
 
+ /*******************delete tour */
+app.delete('/tour/:id', (req, res) => { 
+  const jsonFileData =  fs.readFileSync(toursJson, 'utf-8', (err, data) => {}, (err) => {
+    console.log('err read file tours', err);});
+            // parse data
+    const  parseJsonData = JSON.parse(jsonFileData);
+    const paramId = req.params.id;
+
+
+    const tours = parseJsonData.tours.filter((tour) => tour.id !== paramId);
+    const json = JSON.stringify({tours: tours});
+
+    fs.writeFileSync(toursJson, json, 'utf-8', (data) => {}, (err) => {
+      console.log('err write file', err)
+    });
+    if (paramId) {
+      res.send(tours);
+    } else {
+      throw new Error('Тур не найден по id:', paramId);
+    }
+});
+
 // run and listen serve
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);

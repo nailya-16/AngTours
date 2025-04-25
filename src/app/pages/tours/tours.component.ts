@@ -14,10 +14,15 @@ import { isValid } from "date-fns";
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { MapComponent } from '../../shared/components/map/map.component';
 import { DialogModule } from 'primeng/dialog'
+import { CommonModule } from '@angular/common';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-tours',
   imports: [
+    CommonModule,
     CardModule,
     InputGroupModule, 
     InputGroupAddonModule, 
@@ -27,10 +32,12 @@ import { DialogModule } from 'primeng/dialog'
     FormsModule, 
     HighlightActiveDirective,
     MapComponent,
-    DialogModule
+    DialogModule,
+    ConfirmDialogModule
   ],
   templateUrl: './tours.component.html',
-  styleUrl: './tours.component.scss'
+  styleUrls: ['./tours.component.scss'],
+  providers: [ConfirmationService]
 })
 export class ToursComponent implements OnInit, OnDestroy {
   tours: Tour[] = [];
@@ -40,14 +47,20 @@ export class ToursComponent implements OnInit, OnDestroy {
   destroyer = new Subject<boolean>();
   showModal = false;
   location: ILocation = null;
+  weatherInfo: any = null;
+  isAdmin: boolean = false;
+  selectedTourId: string | null = null; // для хранения ID выбранного тура для удаления
 
   constructor(private toursService: ToursService,
               private route: ActivatedRoute,
-              private router: Router) {}
+              private router: Router,
+              private confirmationService: ConfirmationService,
+              private userService: UserService
+            ) {}
   
   
   ngOnInit(): void {
-
+    this.isAdmin = this.userService.getUser()?.login === "admin";
     //Types
     this.toursService.tourType$.pipe(takeUntil(this.destroyer)).subscribe((tourKey: string) => {
       this.tourType = tourKey;
@@ -70,7 +83,40 @@ export class ToursComponent implements OnInit, OnDestroy {
         this.toursStore = [...data];
       }
     });
+
   }
+
+  confirmDelete(ev: Event, tourId: string): void {
+    ev.stopPropagation(); 
+    this.selectedTourId = tourId;
+    this.confirmationService.confirm({
+      message: 'Вы уверены, что хотите удалить этот тур?',
+      header: 'Подтверждение',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteTour();
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  deleteTour(): void {
+    if (this.selectedTourId) {
+      this.toursService.deleteTourById(this.selectedTourId).subscribe(() => {
+        this.tours = this.tours.filter(tour => tour.id !== this.selectedTourId);
+        this.showModal = false; 
+        this.selectedTourId = null; 
+      });
+    }
+  }
+
+  hideConfirmDialog(): void {
+    this.showModal = false; 
+    this.selectedTourId = null;
+  }
+  
+
   ngOnDestroy(): void {
     this.destroyer.next(true);
     this.destroyer.complete();
@@ -129,6 +175,7 @@ export class ToursComponent implements OnInit, OnDestroy {
         const countrieInfo = data.countrieData;
         console.log('countryInfo', countrieInfo)
         this.location = {lat: countrieInfo.latlng[0], lng: countrieInfo.latlng[1]};   //сохранение локации, координат
+        this.weatherInfo = data.weatherData;                               //сохранение информации о погоде
         this.showModal = true;                                                      //отображение модального окна
       }
     })

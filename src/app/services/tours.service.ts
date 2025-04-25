@@ -5,6 +5,7 @@ import { API } from '../shared/api';
 import { Coords, ICountriesResponseItem, Tour, ToursServerResponse } from '../models/tours';
 import { MapService } from '../services/map.service'
 import { LoaderService } from './loader.service';
+import { CountryWeatherInfo, IWeatherResponse } from '../models/map';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,11 @@ export class ToursService {
     return this.http.get<Tour>(`${tourApi}/${id}`); 
   }
 
+  deleteTourById(id: string): Observable<Tour> { 
+    const tourApi = API.tour;
+    return this.http.delete<Tour>(`${tourApi}/${id}`); 
+  }
+
   getNearestTourByLocationId(id: string): Observable<Tour[]> {
     return this.http.get<Tour[]>(API.nearestTours, {
       params: {locationId: id}
@@ -100,7 +106,7 @@ export class ToursService {
     this.tourDateSubject.next(val);
   }
 
-  getCountryByCode(code: string): Observable<any> {                //TODO add types
+  getCountryByCode(code: string): Observable<CountryWeatherInfo> {                //TODO add types
     return this.http.get<Coords[]>(API.countryByCode, {params: {codes: code}}).pipe(
 
       //send new data
@@ -113,13 +119,13 @@ export class ToursService {
 
         //new Observable
         return this.mapService.getWeather(coords).pipe(
-          map((weatherResponse) => {                              //weatherResponse-дата полученная из this.mapService.getWeather(coords)
+          map((weatherResponse: IWeatherResponse) => {                              //weatherResponse-дата полученная из this.mapService.getWeather(coords)
 
             const current = weatherResponse.current;
             const hourly = weatherResponse.hourly;
 
             const weatherData = {
-              isDay: current.is_day,
+              isDay: current.is_day === 1,
               snowfall: current.snowfall,
               rain: current.rain,
               currentWeather: hourly.temperature_2m[15]             //индекс 15 - температура днем

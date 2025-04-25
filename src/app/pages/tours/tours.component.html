@@ -35,6 +35,11 @@ class="tours-list flex flex-wrap justify-content-around align-items-stretch">
                     Страна: {{item.country?.name_ru}}
                     <img [src]="item.country?.flag_url"/>
                 </p>
+
+                <!-- Кнопка удаления -->
+                <div class="delete-button" *ngIf="isAdmin">
+                    <p-button icon="pi pi-trash" (click)="confirmDelete($event, item.id)" severity="danger" label="Удалить"></p-button>
+                </div>
             </p-card>
         </div>
     }
@@ -45,9 +50,15 @@ class="tours-list flex flex-wrap justify-content-around align-items-stretch">
 
 <p-dialog [(visible)]="showModal" [modal]="true" [style]="{ width: '50rem' }">
     <ng-template #header>
-        <p>Погода: </p>
+        <i class="pi pi-sun header-icon"></i>
+        <p>Погода: {{ weatherInfo?.currentWeather }}°C</p>
+        <p *ngIf="weatherInfo?.rain > 0">Дождь: {{ weatherInfo.rain }} мм</p>
+        <p *ngIf="weatherInfo?.snowfall > 0">Снег: {{ weatherInfo.snowfall }} мм</p>
+        <p *ngIf="weatherInfo?.isDay">Сейчас день</p>
+        <p *ngIf="!weatherInfo?.isDay">Сейчас ночь</p>
     </ng-template>
     
+
     @if (showModal) {
 
         <map [location]="location"></map>
@@ -58,3 +69,12 @@ class="tours-list flex flex-wrap justify-content-around align-items-stretch">
         <p-button label="Закрыть" [text]="true" severity="secondary" (click)="showModal=false"/>
     </ng-template>
 </p-dialog>
+
+<!-- Модальное окно подтверждения удаления -->
+<p-confirmDialog header="Подтверждение" icon="pi pi-exclamation-triangle">
+    <p>Вы уверены, что хотите удалить этот тур?</p>
+    <p-footer>
+        <p-button label="Нет" icon="pi pi-times" (click)="hideConfirmDialog()" class="p-button-text"></p-button>
+        <p-button label="Да" icon="pi pi-check" (click)="deleteTour()" autoFocus></p-button>
+    </p-footer>
+</p-confirmDialog>
