@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserService } from '../../services/user.service';
+import { BasketService } from '../../services/basket.service';
 
 @Component({
   selector: 'app-tours',
@@ -55,7 +56,8 @@ export class ToursComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private router: Router,
               private confirmationService: ConfirmationService,
-              private userService: UserService
+              private userService: UserService,
+              private basketService: BasketService
             ) {}
   
   
@@ -179,5 +181,14 @@ export class ToursComponent implements OnInit, OnDestroy {
         this.showModal = true;                                                      //отображение модального окна
       }
     })
+  }
+
+  setItemToBasket(ev: Event, item: Tour): void {
+    ev.stopPropagation();
+    this.basketService.setItemToBasket(item);
+  }
+  removeItemFromBasket(ev: Event, item: Tour): void {
+    ev.stopPropagation();
+    this.basketService.removeItemFromBasket(item);
   }
 }
