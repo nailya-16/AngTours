@@ -31,7 +31,7 @@ class="tours-list flex flex-wrap justify-content-around align-items-stretch">
 
                 <p>{{item.description}}</p>
 
-                <p (click)="getCountryDetail($event, item.country?.iso_code2)">
+                <p (click)="getCountryDetail($event, item.country?.iso_code2, item)">
                     Страна: {{item.country?.name_ru}}
                     <img [src]="item.country?.flag_url"/>
                 </p>
@@ -70,7 +70,9 @@ class="tours-list flex flex-wrap justify-content-around align-items-stretch">
 
     @if (showModal) {
 
-        <map [location]="location"></map>
+        <map [location]="location">
+            <p>Тур {{selectedTour.name}}</p>
+        </map>
         
     }
 
