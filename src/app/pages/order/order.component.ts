@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { UserService } from '../../services/user.service';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-order',
@@ -16,7 +17,8 @@ import { UserService } from '../../services/user.service';
     InputNumberModule,
     InputTextModule,
     DatePickerModule,
-    ButtonModule
+    ButtonModule,
+    NgTemplateOutlet
   ],
   templateUrl: './order.component.html',
   styleUrl: './order.component.scss'
@@ -25,6 +27,11 @@ export class OrderComponent implements OnInit {
   tourId: string = null;
   tour: Tour;
   userForm: FormGroup;
+  userFormFielsdArr = [
+    {label: 'Имя', placeHolder: 'Введите имя', control: 'firstName'},
+    {label: 'Фамилия', placeHolder: 'Введите фамилию', control: 'lastName'},
+    {label: 'Номер карты', placeHolder: 'Введите номер карты', control: 'cardNumber'},
+  ]
 
   constructor(private tourService: ToursService,
               private route: ActivatedRoute,
