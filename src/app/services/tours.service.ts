@@ -138,4 +138,8 @@ export class ToursService {
       })
     )  
   }
+
+  postOrder(orderBody: any): Observable<any> {      //TODO add interfaces
+    return this.http.post<any>(API.order, orderBody);
+  }
 }
