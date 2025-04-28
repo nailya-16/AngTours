@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, delay, forkJoin, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import { catchError, delay, forkJoin, map, Observable, of, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
 import { API } from '../shared/api';
 import { Coords, ICountriesResponseItem, Tour, ToursServerResponse } from '../models/tours';
 import { MapService } from '../services/map.service'
 import { LoaderService } from './loader.service';
 import { CountryWeatherInfo, IWeatherResponse } from '../models/map';
+import { BasketService } from './basket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,10 @@ export class ToursService {
   private tourDateSubject = new Subject<Date>(); 
   readonly tourDate$ = this.tourDateSubject.asObservable();
 
-  constructor(private http: HttpClient, private mapService: MapService, private loaderService: LoaderService) { }
+  constructor(private http: HttpClient, 
+              private mapService: MapService, 
+              private loaderService: LoaderService,
+              private basketService: BasketService) { }
 
   getTours(): Observable<Tour[]> { 
 
@@ -33,7 +37,8 @@ export class ToursService {
   //parralel
     return forkJoin<[ICountriesResponseItem[], ToursServerResponse]>([countries, tours]).pipe(
       delay(1000),
-      map((data) => {
+      withLatestFrom(this.basketService.basketStore$),
+      map(([data, basketData]) => {
         console.log('data', data);
 
         let toursWithCountries = [] as Tour[];
@@ -47,6 +52,12 @@ export class ToursService {
         if (Array.isArray(toursArr)) {
           console.log('****toursArr', toursArr)
           toursWithCountries = toursArr.map((tour) => {
+            const isTourInBasket = basketData.find((basketTour) => basketTour.id === tour.id);
+            
+            if(isTourInBasket) {
+              tour.inBasket = true;  
+            }
+
             return {
               ...tour,
               country: countriesMap.get(tour.code) || null     //add new prop
