@@ -8,7 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { UserService } from '../../services/user.service';
-import { NgTemplateOutlet } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-order',
@@ -18,7 +18,8 @@ import { NgTemplateOutlet } from '@angular/common';
     InputTextModule,
     DatePickerModule,
     ButtonModule,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    CommonModule
   ],
   templateUrl: './order.component.html',
   styleUrl: './order.component.scss'
@@ -27,11 +28,14 @@ export class OrderComponent implements OnInit {
   tourId: string = null;
   tour: Tour;
   userForm: FormGroup;
-  userFormFielsdArr = [
-    {label: 'Имя', placeHolder: 'Введите имя', control: 'firstName'},
-    {label: 'Фамилия', placeHolder: 'Введите фамилию', control: 'lastName'},
-    {label: 'Номер карты', placeHolder: 'Введите номер карты', control: 'cardNumber'},
-  ]
+  userFormFieldsArr = [
+    { label: 'Имя', placeHolder: 'Введите имя', control: 'firstName', type: 'text' },
+    { label: 'Фамилия', placeHolder: 'Введите фамилию', control: 'lastName', type: 'text' },
+    { label: 'Номер карты', placeHolder: 'Введите номер карты', control: 'cardNumber', type: 'text' },
+    { label: 'Возраст', placeHolder: '', control: 'age', type: 'number' },
+    { label: 'День рождения', placeHolder: '', control: 'birthDate', type: 'date' },
+    { label: 'Гражданство', placeHolder: 'Введите гражданство', control: 'citizenship', type: 'text' }
+  ];
 
   constructor(private tourService: ToursService,
               private route: ActivatedRoute,

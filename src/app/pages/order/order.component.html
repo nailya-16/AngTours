@@ -1,52 +1,24 @@
+<div><a routerLink="/tours" class="back-link">Назад</a></div>
 <div class="ticket-info-wrap col-6">
     <div>
-        <a routerLink="/tours">Назад</a>
+        
 
-        <div class="mt-3">
-            <h2>Информация о туре</h2>
-            <div>Название {{tour?.name}}</div>
+        <div class="mt-3 tour-info">
+            <h2 class="text-center">Информация о туре</h2>
+            <div class="tour-name">Название {{tour?.name}}</div>
         </div>
-        <div class="mt-3">
-            <h2>Информация о покупателе</h2>
+        <div class="mt-3 customer-info">
+            <h2 class="text-center">Информация о покупателе</h2>
             <form>
                 <div class="mt-3 user-info" [formGroup]="userForm">
 
-                    @for (fieldObj of userFormFielsdArr; track fieldObj.control) {
+                    @for (fieldObj of userFormFieldsArr; track fieldObj.control) {
                         <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="fieldObj"
                     />
                     }
 
-                    <div class="form-group mt-3">
-                        <label class="mx-3">Возраст</label>
-                        <p-inputNumber 
-                            name="age"
-                            formControlName="age"
-                            [showButtons]="true"
-                            [min]="0"
-                            class="form-control mt-3">
-                        
-                        </p-inputNumber>
-                    </div>
-                    <div class="form-group mt-3">
-                        <label class="mx-3">День рождения</label>
-                        <p-datepicker
-                            name="birthDate"
-                            formControlName="birthDate"
-                            class="form-control mt-3">
-                        </p-datepicker>
-                    
-                    </div>
-                    <div class="form-group mt-3">
-                        <label for="citizenship" class="mx-3">Гражданство</label>
-                        <input type="text"
-                               class="form-control mt-3"
-                               id="citizenship"
-                               pInputText
-                               formControlName="citizenship"
-                               placeholder="Введите гражданство">
-                    </div>
                     <div class="form-group mt-3">
                         <p-button 
                             (click)="initOrder()"
@@ -62,14 +34,28 @@
     </div>
 </div>
 
-<ng-template #formField let-controlNew="control" let-placeHolder="placeHolder" let-label="label">
+<ng-template #formField let-controlNew="control" let-placeHolder="placeHolder" let-label="label" let-type="type">
     <div [formGroup]="userForm" class="form-group mt-3">
-        <label [attr.for]="controlNew" class="mx-3">{{label}}</label>
-        <input type="text"
+        <label [attr.for]="controlNew" class="mx-3 form-label">{{label}}</label>
+        
+        <input *ngIf="type === 'text'" 
+               type="text"
                class="form-control mt-3"
                [id]="controlNew"
                pInputText
                [formControlName]="controlNew"
                [placeholder]="placeHolder">
+
+        <p-inputNumber *ngIf="type === 'number'" 
+                       name="{{controlNew}}"
+                       formControlName="{{controlNew}}"
+                       [showButtons]="true"
+                       [min]="0"
+                       class="form-control mt-3"></p-inputNumber>
+
+        <p-datepicker *ngIf="type === 'date'" 
+                      name="{{controlNew}}"
+                      formControlName="{{controlNew}}"
+                      class="form-control mt-3"></p-datepicker>
     </div>
 </ng-template>
