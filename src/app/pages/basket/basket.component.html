@@ -1,16 +1,22 @@
 <p-table [value]="basketItems$ | async" [tableStyle]="{ 'min-width': '50rem'}">
     <ng-template #header>
         <tr>
-            <th>Тур</th>
-            <th>Цена</th>
-            <th>Дата</th>
+            <th pSortableColumn="name">Тур <p-sortIcon field="name"></p-sortIcon></th>
+            <th pSortableColumn="price">Цена <p-sortIcon field="price"></p-sortIcon></th>
+            <th pSortableColumn="date">Дата <p-sortIcon field="date"></p-sortIcon></th>
+            <th>Удалить</th> 
         </tr>
     </ng-template>
     <ng-template #body let-tour>
         <tr>
             <td>{{ tour.name }}</td>
             <td>{{ tour.price }}</td>
-            <td>{{ tour.date }}</td>
+            <td>{{ tour.date | date:'shortDate' }}</td>
+            <td>
+                <button (click)="removeTour(tour)" class="p-button p-button-danger">
+                    <i class="pi pi-times"></i>
+                </button>
+            </td>
         </tr>
     </ng-template>
-</p-table>>
+</p-table>

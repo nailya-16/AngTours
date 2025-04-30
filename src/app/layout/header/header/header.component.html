@@ -6,7 +6,7 @@
 
         <div class="user-info"></div>
 
-        <div class="basket mr-4">
+        <div class="basket mr-4" (click)="navigateToBasket()">
             <p-overlaybadge
                 badgeSize="small"
                 [value]="(basketStore$ | async).length"

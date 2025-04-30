@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private userService: UserService, 
     private router: Router, 
     private ngZone: NgZone,
-    private basketService: BasketService
+    private basketService: BasketService,
   ) {}
 
   ngOnInit(): void {
@@ -77,4 +77,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   hoverLogoutBtn(val: boolean): void {
     this.logoutIcon = val ? 'pi pi-sign-out' : 'pi pi-user';
   }
+
+  navigateToBasket(): void {
+    this.router.navigate(['/tours/basket']);
+}
 }
