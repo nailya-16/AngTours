@@ -64,7 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       },
       {
         label: 'Заказы',
-        routerLink: ['/orders'],
+        routerLink: ['/tours/orders'],
       },
     ];
   }

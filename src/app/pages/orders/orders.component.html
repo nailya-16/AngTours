@@ -1,0 +1,18 @@
+<table>
+    <thead>
+      <tr>
+        <th>Логин</th>
+        <th>Id Тура</th>
+        <th>Кол-во туристов</th>
+        <th>ФИО</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.login }}</td>
+        <td>{{ order.tourId }}</td>
+        <td>{{ order.touristsCount | touristsCountPipe }}</td>
+        <td>{{ order.fullName | fullNamePipe }}</td> 
+      </tr>
+    </tbody>
+</table>

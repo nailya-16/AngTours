@@ -174,6 +174,18 @@ app.post('/order', (req, res) => {
     res.send('ok');
 });
 
+/*******************get ord */
+app.get('/orders', (req, res) => { 
+  const jsonFileData =  fs.readFileSync(orderJson, 'utf-8', (err, data) => {}, (err) => {
+    console.log('err read file tours', err);});
+
+            // parse data
+    const  parseJsonData = JSON.parse(jsonFileData);
+
+    res.send(parseJsonData);
+});
+
+
 // run and listen serve
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
