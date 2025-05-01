@@ -11,7 +11,7 @@ import { SearchPipe } from '../../shared/pipes/search.pipe';
 import { FormsModule } from '@angular/forms';
 import { HighlightActiveDirective } from '../../shared/directives/highlight-active.directive';
 import { isValid } from "date-fns";
-import { Subject, Subscription, takeUntil } from 'rxjs';
+import { map, Subject, Subscription, takeUntil, withLatestFrom } from 'rxjs';
 import { MapComponent } from '../../shared/components/map/map.component';
 import { DialogModule } from 'primeng/dialog'
 import { CommonModule } from '@angular/common';
@@ -63,6 +63,29 @@ export class ToursComponent implements OnInit, OnDestroy {
   
   
   ngOnInit(): void {
+       //Basket
+       this.toursService.showInBasket$.pipe( 
+        takeUntil(this.destroyer),
+        withLatestFrom(this.basketService.basketStore$),
+        map(([isBasket, baskets]) => {
+          if (isBasket) {
+            return baskets;
+          } else {
+              return false
+          }
+        
+        })
+      ).subscribe((basketsData) => {
+        console.log('basketsData', basketsData);
+        
+        if (basketsData) {
+          this.tours = basketsData;
+        } else {
+          this.initFilterLogic();
+
+        }
+       
+      })
     this.isAdmin = this.userService.getUser()?.login === "admin";
     //Types
     this.toursService.tourType$.pipe(takeUntil(this.destroyer)).subscribe((tourKey: string) => {
@@ -127,7 +150,7 @@ export class ToursComponent implements OnInit, OnDestroy {
   goToTour(item: Tour): void { 
     this.router.navigate(['tour', item.id], {relativeTo: this.route});
   }
-  initFilterLogic() {
+  initFilterLogic(): void {
     if (this.tourDate) {
       this.tours = this.toursStore.filter((tour) => {
         if (isValid(new Date(tour.date))) {
@@ -142,7 +165,7 @@ export class ToursComponent implements OnInit, OnDestroy {
       })
     }
 
-    if (this.tourType) {
+     if (this.tourType) {
      const tourStore = this.tourDate ? this.tours : this.toursStore;
       switch (this.tourType) {
         case 'group':
@@ -155,6 +178,10 @@ export class ToursComponent implements OnInit, OnDestroy {
           this.tours = [...tourStore];
         break;
       }
+    }
+
+    if (!this.tourDate && !this.tourType) {
+      this.tours = [...this.toursStore];
     }
   }
   searchTour(ev: Event): void {

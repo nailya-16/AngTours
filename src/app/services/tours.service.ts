@@ -21,12 +21,18 @@ export class ToursService {
   private tourDateSubject = new Subject<Date>(); 
   readonly tourDate$ = this.tourDateSubject.asObservable();
 
+  private showInBasketSubject = new Subject<boolean>();
+  readonly showInBasket$ = this.showInBasketSubject.asObservable();
+  private showInBasket: boolean = false; // Состояние чекбокса
+
   constructor(private http: HttpClient, 
               private mapService: MapService, 
               private loaderService: LoaderService,
               private basketService: BasketService) { }
 
-  getTours(): Observable<Tour[]> { 
+  getTours(inBasket = false): Observable<Tour[]> { 
+
+
 
     //set loader
     this.loaderService.setLoader(true);
@@ -42,7 +48,7 @@ export class ToursService {
         console.log('data', data);
 
         let toursWithCountries = [] as Tour[];
-        const toursArr = data[1].tours;
+        const toursArr = inBasket ? basketData : data[1].tours;
         const countriesMap = new Map();
 
         data[0].forEach(country => {
@@ -64,6 +70,11 @@ export class ToursService {
             }
           });
         }
+
+        if (this.showInBasket) {
+          toursWithCountries = toursWithCountries.filter(tour => tour.inBasket);
+        }
+
         return toursWithCountries;
       }),
       tap((data) => {
@@ -115,6 +126,11 @@ export class ToursService {
 
   initChangeTourDate(val: Date): void {    
     this.tourDateSubject.next(val);
+  }
+
+  initShowInBasketOnly(val: boolean): void {
+    this.showInBasket = val; // обновляем локальное состояние
+    this.showInBasketSubject.next(val); // уведомляем подписчиков
   }
 
   getCountryByCode(code: string): Observable<CountryWeatherInfo> {                //TODO add types

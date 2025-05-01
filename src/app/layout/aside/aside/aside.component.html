@@ -19,4 +19,10 @@
         [showButtonBar]="true"
         dateFormat="dd-mm-yy" />
     </div>
+
+    <div class="my-3 checkbox-container">
+        <input type="checkbox" id="showInBasket" [(ngModel)]="showInBasketOnly" (change)="toggleShowInBasketOnly()">
+        <label for="showInBasket">Показать только туры в корзине</label>
+    </div>
+    
 </div>

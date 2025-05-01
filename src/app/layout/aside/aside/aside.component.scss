@@ -2,3 +2,16 @@
     width: 300px;
     flex-basis: 300px;
 }
+.checkbox-container label {
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s;
+  
+    &:hover {
+      color: #007bff;
+    }
+}
+.checkbox-container input[type='checkbox'] {
+    margin-right: 10px;
+}

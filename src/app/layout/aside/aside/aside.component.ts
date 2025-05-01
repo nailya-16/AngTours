@@ -18,6 +18,8 @@ export class AsideComponent implements OnInit {
 
   selectedType: ITourType | null = null; //TODO defined type
 
+  showInBasketOnly: boolean = false; // состояние чекбокса
+
   tourTypes: ITourType[] = [
     { key: 'single', label: 'Одиночный' },
     { key: 'group', label: 'Групповой' },
@@ -40,6 +42,10 @@ export class AsideComponent implements OnInit {
   clearDate(): void {
     this.date = null; // Сбрасываем дату
     this.tourService.initChangeTourDate(this.date); 
-    this.tourService.initChangeTourType(this.selectedType?.key); // Обновляем туры по типу
+    this.tourService.initChangeTourType(this.selectedType?.key); // обновляем туры по типу
+  }
+
+  toggleShowInBasketOnly(): void {
+    this.tourService.initShowInBasketOnly(this.showInBasketOnly); 
   }
 }
