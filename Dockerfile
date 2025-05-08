@@ -7,11 +7,14 @@ WORKDIR /app
 # Copy the app package and package-lock.json file
 COPY package*.json ./
 
+# Обновите npm до последней версии
+RUN npm install -g npm@latest
+
 # Copy local directories to the current local directory of our docker image (/app)
 
 
 # Install node packages, install serve, build the app, and remove dependencies at the end
-RUN npm install \
+RUN npm install --legacy-peer-deps \
     && npm install -g serve 
     
 COPY . /app
